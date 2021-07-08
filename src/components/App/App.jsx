@@ -47,6 +47,22 @@ export default class App extends Component {
     }))
   }
 
+  componentDidMount() {
+    const conatcts = localStorage.getItem("contacts");
+    const parsedConatcts = JSON.parse(conatcts);
+    
+    if (parsedConatcts) {
+      this.setState({ contacts: parsedConatcts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { contacts } = this.state;
+    if (prevState.contacts !== contacts) {
+      localStorage.setItem("contacts", JSON.stringify(contacts));
+    }
+  }
+
   render() {
     const { filter } = this.state;
     const visibleContacts = this.getVisibleContact();
@@ -55,27 +71,6 @@ export default class App extends Component {
       <Container>
         <Title title={"Phonebook"} />
         <ContactForm onSubmit={this.addContact} />
-        {/* <form onSubmit={this.handleSubmit}>
-          <label>Name
-            <input onChange={this.handleChange}
-              type="text"
-              name="name"
-              value={name}
-              />
-            </label>
-          
-          <label>Number
-            <input onChange={this.handleChange}
-              type="tel"
-              name="number"
-              value={number} />
-            </label>
-          
-            <button type="submit">Add contact</button>
-        </form> */}
-        {/* <label>Find contacts by name
-          <input type="text" value={filter} onChange={this.changeFilter}/>
-        </label> */}
         <Filter value={filter} onChange={this.changeFilter} />
         <Title title={"Contacts"} />
         <ContactList contacts={visibleContacts} onDeleteContact={this.deleteContact}/>
